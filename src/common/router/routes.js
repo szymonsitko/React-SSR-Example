@@ -42,3 +42,36 @@
 
     Good luck!
 */
+
+import React from 'react';
+import { renderToString } from 'react-dom/server';
+import { ServerStyleSheet } from 'styled-components';
+import { StaticRouter } from 'react-router-dom';
+import "isomorphic-fetch";
+
+import App from '@common/App';
+import * as constants from '@constants';
+import { Html } from '@lib';
+
+export default (req, res) => {
+    const { APP_TITLE, BUNDLE_PATH, DEFAULT_LOCATION } = constants;
+    const sheet = new ServerStyleSheet();
+
+    const render = (jsonData) => {
+      const markup = renderToString(sheet.collectStyles(<StaticRouter context={{}} location={req.url}><App data={jsonData}/></StaticRouter>));
+      const styles = sheet.getStyleTags();
+      res.send(Html(APP_TITLE, BUNDLE_PATH, jsonData, styles, markup));
+    }
+
+    switch(true) {
+      case /^\/about$/.test(req.url):
+        render();
+        break;
+      default:
+        fetch(`https://jobs.github.com/positions.json?description=javascript&location=${DEFAULT_LOCATION}`)
+        .then(response => response.json())
+        .then(jsonData => {
+          render(jsonData);
+        });
+    }
+};

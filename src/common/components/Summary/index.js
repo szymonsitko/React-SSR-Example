@@ -1,28 +1,24 @@
 import React from 'react';
 import ReactHtmlParser, { processNodes, convertNodeToElement, htmlparser2 } from 'react-html-parser';
 
-import { Container, Header } from '@components';
+import { JobCard, Header } from '@components';
 
-const SearchResults = props => {
+const Summary = props => {
   return (
     <React.Fragment>
       <Header>
-        <h1>Search results</h1>
+        <h1>Search summary</h1>
       </Header>
       { props.queryData.map(each => {
         return (
               <div key={each.id} className="parent-container">
-                  <Container>
+                  <JobCard>
                       <div className="search-result">
-                          <Header>
-                              <h2 className="title">{each.title}</h2>
-                          </Header>
-                          <hr />
+                          <h2 className="title">{each.title}</h2>
                           <p className="date">{each.created_at}</p>
                           <p className="type">Type: {each.type}</p>
-                          <div className="description">Job description: {ReactHtmlParser(each.description)}</div>
                       </div>
-                  </Container>
+                  </JobCard>
               </div>
         )
       })}
@@ -30,4 +26,4 @@ const SearchResults = props => {
   )
 }
 
-export default SearchResults;
+export default Summary;
